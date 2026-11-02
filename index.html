@@ -1,169 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Projects and notebook by Ankita Gogoi.">
-    <title>Ankita Gogoi | Portfolio</title>
-    <style>
-        :root {
-            color-scheme: light;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            color: #172033;
-            background: #f7f8fc;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f6f8;
+      color: #222;
+      line-height: 1.6;
+    }
+    header {
+      text-align: center;
+      padding: 60px 20px 30px;
+    }
+    header h1 { font-size: 2.4rem; }
+    header p { color: #666; margin-top: 8px; }
 
-        * {
-            box-sizing: border-box;
-        }
+    /* ---------- Project grid ---------- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    .card .thumb {
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #fff;
+      background-size: cover;
+      background-position: center;
+    }
+    .card h2 { font-size: 1.1rem; padding: 16px 16px 4px; }
+    .card p { font-size: 0.9rem; color: #666; padding: 0 16px 18px; }
 
-        body {
-            margin: 0;
-            min-width: 320px;
-        }
+    /* Hide the full descriptions; they are shown in the pop-up */
+    .details { display: none; }
 
-        .page {
-            width: min(100% - 2rem, 1040px);
-            margin: 0 auto;
-        }
+    /* ---------- Pop-up (modal) ---------- */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 750px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+    }
+    .close-btn {
+      position: absolute;
+      top: 12px; right: 16px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #888;
+    }
+    .close-btn:hover { color: #222; }
+    .modal h2 { margin-bottom: 12px; }
+    .modal h3 { margin: 20px 0 6px; font-size: 1.05rem; color: #444; }
+    .modal img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+    .modal ul { padding-left: 20px; }
 
-        header {
-            padding: clamp(3.5rem, 10vw, 7rem) 0 2.5rem;
-        }
-
-        .eyebrow {
-            margin: 0 0 0.75rem;
-            color: #5263c5;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: clamp(2.4rem, 7vw, 4.25rem);
-            letter-spacing: -0.055em;
-            line-height: 1.05;
-        }
-
-        header p:last-child {
-            max-width: 38rem;
-            margin: 1rem 0 0;
-            color: #5b6475;
-            font-size: 1.1rem;
-            line-height: 1.7;
-        }
-
-        .projects {
-            padding: 1.5rem 0 5rem;
-        }
-
-        .section-heading {
-            margin: 0 0 1.5rem;
-            font-size: 1.65rem;
-            letter-spacing: -0.035em;
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
-            gap: 1.5rem;
-        }
-
-        .project-card {
-            overflow: hidden;
-            border: 1px solid #e6e9f1;
-            border-radius: 1rem;
-            background: #fff;
-            box-shadow: 0 12px 32px rgb(23 32 51 / 5%);
-        }
-
-        .project-image {
-            display: block;
-            width: 100%;
-            aspect-ratio: 16 / 10;
-            object-fit: cover;
-            background: #edf0f8;
-        }
-
-        .project-content {
-            padding: 1.35rem;
-        }
-
-        .project-content h3 {
-            margin: 0;
-            font-size: 1.25rem;
-            letter-spacing: -0.025em;
-        }
-
-        .project-content p {
-            margin: 0.65rem 0 1.15rem;
-            color: #5b6475;
-            line-height: 1.65;
-        }
-
-        .project-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            color: #4658bd;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .project-link:hover {
-            text-decoration: underline;
-            text-underline-offset: 0.2em;
-        }
-
-        .project-link:focus-visible {
-            border-radius: 0.2rem;
-            outline: 3px solid #9ca8ff;
-            outline-offset: 3px;
-        }
-
-        footer {
-            padding: 1.5rem 0 2rem;
-            border-top: 1px solid #e6e9f1;
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-    </style>
+    footer { text-align: center; color: #999; padding: 40px 20px; font-size: 0.85rem; }
+  </style>
 </head>
 <body>
-    <div class="page">
-        <header>
-            <p class="eyebrow">Portfolio</p>
-            <h1>Ankita Gogoi</h1>
-            <p>A collection of my projects, analysis, and notebook work.</p>
-        </header>
 
-        <main>
-            <section class="projects" aria-labelledby="projects-heading">
-                <h2 class="section-heading" id="projects-heading">Projects</h2>
-                <div class="project-grid">
-                    <article class="project-card">
-                        <img
-                            class="project-image"
-                            src="projects/project1/chart.png"
-                            alt="Chart visualization from Project 1"
-                        >
-                        <div class="project-content">
-                            <h3>Project 1</h3>
-                            <p>Explore the analysis and visualizations in this project notebook.</p>
-                            <a class="project-link" href="projects/project1/notebook.html">
-                                View notebook <span aria-hidden="true">&rarr;</span>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-            </section>
-        </main>
+  <header>
+    <h1>Your Name</h1>
+    <p>Text analytics &amp; NLP projects in finance, built with Python</p>
+  </header>
 
-        <footer>
-            <p>&copy; 2026 Ankita Gogoi</p>
-        </footer>
+  <main class="grid">
+
+    <!-- ===================== PROJECT 1 ===================== -->
+    <div class="card">
+      <div class="thumb" style="background: #4a6fa5;">📄</div>
+      <h2>10-K Text &amp; Sentiment Analysis</h2>
+      <p>Measured tone, readability and forward-looking language across 100 annual reports.</p>
+
+      <div class="details">
+        <h2>10-K Text &amp; Sentiment Analysis</h2>
+        <h3>Goal</h3>
+        <p>Annual reports (10-Ks) are long, dense documents. I wanted to measure their language at scale: how positive, negative or legally cautious they sound, how hard they are to read, and how much they talk about the future.</p>
+        <h3>Data</h3>
+        <p>100 10-K filings, downloaded and processed in Python (Jupyter notebooks).</p>
+        <h3>Approach</h3>
+        <ul>
+          <li>Built a word-frequency dictionary across all 100 filings, with every word lowercased (e.g. <code>{'revenue': 5231, 'risk': 4870, ...}</code>).</li>
+          <li>Counted positive, negative and litigious words in each filing using a financial sentiment word list, and calculated each as a rate of total words.</li>
+          <li>Split each document into sentences with NLTK's sentence tokenizer.</li>
+          <li>Flagged <strong>future-oriented sentences</strong> containing <em>will, shall, may, might, should</em> or <em>going to</em>.</li>
+          <li>Measured readability with the <strong>Gunning Fog index</strong> and counted complex words (3+ syllables).</li>
+          <li>Computed every measure twice, once for the whole document and once for future-oriented sentences only (e.g. <code>PositivityRate</code> and <code>future_PositivityRate</code>).</li>
+          <li>Stored all results in a pandas DataFrame with one row per filing.</li>
+        </ul>
+        <h3>Results</h3>
+        <p>[Add 1–3 findings, e.g. the average Fog score, or whether future-looking sentences were more positive than the rest of the report.]</p>
+        <!-- <img src="images/10k-chart.png" alt="Chart"> -->
+      </div>
     </div>
+
+    <!-- ===================== PROJECT 2 ===================== -->
+    <div class="card">
+      <div class="thumb" style="background: #e07a5f;">🔍</div>
+      <h2>MD&amp;A Extraction</h2>
+      <p>Pulled the Management's Discussion &amp; Analysis section out of every 10-K and re-ran the full analysis on it.</p>
+
+      <div class="details">
+        <h2>MD&amp;A Extraction</h2>
+        <h3>Goal</h3>
+        <p>Item 7, Management's Discussion and Analysis (MD&amp;A), is where management explains the company's results in its own words. I wanted to compare this section's language with the language of the 10-K as a whole.</p>
+        <h3>Approach</h3>
+        <ul>
+          <li>Wrote code to automatically locate and extract Item 7 from each of the 100 filings.</li>
+          <li>Stored the MD&amp;A text in its own DataFrame column.</li>
+          <li>Re-ran the full text pipeline on the MD&amp;A (sentiment counts and rates, sentences, future-oriented sentences, Fog index, complex words), so the DataFrame holds results for both the full 10-K and the MD&amp;A.</li>
+          <li>Saved the finished DataFrame as a <strong>pickle</strong> file so later work loads instantly instead of reprocessing everything.</li>
+        </ul>
+        <h3>Results</h3>
+        <p>[e.g. how MD&amp;A tone or readability compared with the full 10-K.]</p>
+      </div>
+    </div>
+
+    <!-- ===================== PROJECT 3 ===================== -->
+    <div class="card">
+      <div class="thumb" style="background: #3d9970;">🎙️</div>
+      <h2>Earnings Call Scraper</h2>
+      <p>Automatically collected about 200 earnings call transcripts and split them into speaker turns.</p>
+
+      <div class="details">
+        <h2>Earnings Call Scraper</h2>
+        <h3>Goal</h3>
+        <p>Build a dataset of earnings calls that separates what executives say in their <strong>prepared remarks</strong> from how they answer analysts in the <strong>Q&amp;A</strong>.</p>
+        <h3>Data</h3>
+        <p>Earnings call transcripts from 10 pages of The Motley Fool's transcript listings, 20 calls per page.</p>
+        <h3>Approach</h3>
+        <ul>
+          <li>Wrote a web scraper that goes through the listing pages and downloads every transcript automatically.</li>
+          <li>Split each call into its prepared-remarks section and its Q&amp;A section.</li>
+          <li>Identified each speaker and what they said in each turn.</li>
+          <li>Organized everything into two related DataFrames:
+            <ul>
+              <li><strong>Calls:</strong> EarningsCallID, CompanyName, CallDate, full text (one row per call)</li>
+              <li><strong>Speaker turns:</strong> SpeakerTurnID, EarningsCallID, SpeakerName, PreparedOrQA, Text (one row per speaker turn)</li>
+            </ul>
+          </li>
+        </ul>
+        <h3>Results</h3>
+        <p>[e.g. number of calls and speaker turns collected.]</p>
+      </div>
+    </div>
+
+    <!-- ===================== PROJECT 4 ===================== -->
+    <div class="card">
+      <div class="thumb" style="background: #8e6c8a;">🤖</div>
+      <h2>Prepared vs. Q&amp;A Classifier</h2>
+      <p>A Naive Bayes model that guesses whether a sentence came from scripted remarks or a live Q&amp;A answer.</p>
+
+      <div class="details">
+        <h2>Prepared vs. Q&amp;A Classifier</h2>
+        <h3>Goal</h3>
+        <p>Do executives talk differently when they're reading a script than when they're answering questions live? I built a model to find out.</p>
+        <h3>Approach</h3>
+        <ul>
+          <li>Trained a <strong>Naive Bayes</strong> text classifier on the speaker-turn data from the earnings call project.</li>
+          <li>Used only executives' <em>answers</em> from the Q&amp;A section (not analysts' questions), so the model compares prepared speech with spontaneous answers.</li>
+          <li>Built an interactive webpage: type in any sentence and the model labels it <em>Prepared Remarks</em> or <em>Q&amp;A</em>, along with its probability scores.</li>
+        </ul>
+        <h3>Results</h3>
+        <p>[Add accuracy, plus words that most strongly signal each class.]</p>
+        <!-- <img src="images/classifier-screenshot.png" alt="Classifier webpage"> -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Pop-up window (filled in automatically when a card is clicked) -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <button class="close-btn" id="closeBtn" aria-label="Close">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <footer>© 2026 Your Name</footer>
+
+  <script>
+    const overlay = document.getElementById('overlay');
+    const modalContent = document.getElementById('modalContent');
+
+    // Open: copy the clicked card's hidden description into the pop-up
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        modalContent.innerHTML = card.querySelector('.details').innerHTML;
+        overlay.classList.add('open');
+      });
+    });
+
+    // Close: X button, clicking outside the box, or pressing Esc
+    function closeModal() { overlay.classList.remove('open'); }
+    document.getElementById('closeBtn').addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  </script>
+
 </body>
 </html>
