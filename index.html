@@ -1,15 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My First Webpage</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ankita Gogoi | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --light: #f1f5f9;
+      --rule: #e2e8f0;
+      --navy: #050d1c;
+      --navy-2: #0a1a33;
+      --gold: #e0a93b;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+      color: var(--ink); background: #fff; line-height: 1.6; font-size: 16px;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Navigation ---------- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 5;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    nav.scrolled { background: rgba(5,13,28,0.96); box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+    nav .wrap { display: flex; justify-content: space-between; align-items: center; height: 68px; }
+    nav .brand { font-weight: 800; color: #fff; letter-spacing: -0.01em; }
+    nav .brand span { color: var(--gold); }
+    nav .links a { color: rgba(255,255,255,0.8); font-weight: 500; font-size: 0.95rem; margin-left: 30px; }
+    nav .links a:hover { color: var(--gold); }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative; overflow: hidden; color: #fff;
+      background: radial-gradient(circle at 80% 20%, #0f2546 0%, var(--navy) 55%);
+      padding: 150px 0 110px;
+    }
+    .hero::before {  /* subtle dot grid */
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1px);
+      background-size: 22px 22px;
+      mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    }
+    .hero .wrap { position: relative; display: flex; align-items: center; gap: 56px; }
+    .photo {
+      flex-shrink: 0; width: 190px; height: 190px; border-radius: 50%;
+      background: var(--navy-2) center/cover;
+      border: 4px solid var(--gold);
+      box-shadow: 0 0 0 10px rgba(224,169,59,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.2rem; font-weight: 700;
+    }
+    .hero h1 { font-size: 3.4rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 16px; }
+    .hero p.bio { color: rgba(255,255,255,0.78); font-size: 1.1rem; max-width: 600px; }
+
+    /* ---------- Projects ---------- */
+    .projects { padding: 80px 0 100px; }
+    .section-head { margin-bottom: 36px; }
+    .section-head h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .card {
+      background: #fff; border: 1px solid var(--rule); border-radius: 14px;
+      overflow: hidden; cursor: pointer; display: flex; flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(15,23,42,0.14); border-color: transparent; }
+    .thumb {
+      position: relative; height: 180px; padding: 20px 22px; color: #fff;
+      background: linear-gradient(140deg, var(--navy-2) 0%, var(--navy) 100%);
+      display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+    }
+    .thumb::after {
+      content: ""; position: absolute; right: -40px; bottom: -40px;
+      width: 140px; height: 140px; border-radius: 50%;
+      border: 22px solid rgba(224,169,59,0.12);
+      transition: transform 0.4s;
+    }
+    .card:hover .thumb::after { transform: scale(1.25); }
+    .thumb-top { display: flex; justify-content: flex-end; align-items: center; }
+    .thumb .num { font-size: 0.85rem; font-weight: 700; opacity: 0.4; }
+    .thumb .stat { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+    .thumb .stat-cap { font-size: 0.82rem; opacity: 0.75; margin-top: 6px; max-width: 90%; }
+    .card .body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex-grow: 1; }
+    .card h3 { font-size: 1.1rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .card p { font-size: 0.92rem; color: var(--muted); flex-grow: 1; }
+    .card .more { font-size: 0.9rem; font-weight: 600; color: var(--navy-2); margin-top: 16px; }
+    .card .arrow { display: inline-block; transition: transform 0.2s; }
+    .card:hover .arrow { transform: translateX(5px); }
+
+    .details { display: none; }
+
+    /* ---------- Scroll reveal ---------- */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .grid .card:nth-child(2) { transition-delay: 0.08s; }
+    .grid .card:nth-child(3) { transition-delay: 0.16s; }
+    .grid .card:nth-child(4) { transition-delay: 0.24s; }
+    .grid .card.visible { transition-delay: 0s; }
+
+    /* ---------- Pop-up ---------- */
+    .overlay {
+      position: fixed; inset: 0; z-index: 10;
+      background: rgba(5,13,28,0.75); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .modal {
+      background: #fff; border-radius: 14px; max-width: 780px; width: 100%;
+      max-height: 90vh; overflow-y: auto; position: relative;
+      transform: translateY(20px) scale(0.98); transition: transform 0.25s;
+    }
+    .overlay.open .modal { transform: none; }
+    .modal-head {
+      background: linear-gradient(140deg, var(--navy-2) 0%, var(--navy) 100%);
+      color: #fff; padding: 36px 44px 30px;
+    }
+    .modal-head h2 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 0; line-height: 1.25; }
+    .modal-body { padding: 8px 44px 40px; }
+    .modal-body h4 {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--navy-2); margin: 28px 0 8px; display: flex; align-items: center; gap: 10px;
+    }
+    .modal-body h4::before { content: ""; width: 18px; height: 2px; background: var(--gold); }
+    .modal-body p, .modal-body li { color: #334155; }
+    .modal-body ul { padding-left: 22px; }
+    .modal-body li { margin-bottom: 7px; }
+    .modal-body li::marker { color: var(--gold); }
+    .modal-body strong { color: var(--navy); }
+    .modal-body code { font-size: 0.85em; background: var(--light); padding: 2px 6px; border-radius: 4px; }
+    .modal-body img { max-width: 100%; margin-top: 12px; border-radius: 8px; border: 1px solid var(--rule); }
+    .close-btn {
+      position: absolute; top: 14px; right: 18px; background: none; border: none;
+      color: #fff; font-size: 1.9rem; cursor: pointer; opacity: 0.75; transition: opacity 0.2s, transform 0.2s;
+    }
+    .close-btn:hover { opacity: 1; transform: rotate(90deg); }
+
+    footer { background: var(--navy); color: rgba(255,255,255,0.6); padding: 30px 0; font-size: 0.88rem; }
+    footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    footer a:hover { color: var(--gold); }
+
+    @media (max-width: 800px) {
+      .hero .wrap { flex-direction: column; text-align: center; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero p.bio { margin: 0 auto; }
+      nav .links a { margin-left: 18px; }
+      .modal-head, .modal-body { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
 </head>
 <body>
 
-    <h1>Welcome to My Website</h1>
-    <h2> Ankita Gogoi here! </h2>
-    <p>This is a simple, standard HTML5 boilerplate file.</p>
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav id="nav">
+    <div class="wrap">
+      
+      <div class="links">
+        <a href="#projects">Projects</a>
+        <a href="https://github.com/yourusername">GitHub</a>
+        <a href="https://www.linkedin.com/in/yourprofile">LinkedIn</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <div class="wrap">
+      <!-- To use your photo: put it in an images/ folder and change this line to
+           <div class="photo" style="background-image: url('images/me.jpg');"></div> -->
+      <div class="photo">AG</div>
+      <div>
+        <h1>Ankita Gogoi</h1>
+        <p class="bio">I use Python and natural language processing to analyze financial text, including annual reports, management discussion and earnings calls, turning unstructured documents into data that can be measured and modeled.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section class="projects" id="projects">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Projects</h2>
+      </div>
+
+      <div class="grid">
+
+        <!-- ===================== PROJECT 1 ===================== -->
+        <div class="card reveal">
+          <div class="thumb">
+            <div class="thumb-top"><span class="num">01</span></div>
+            <div><div class="stat">3x</div><div class="stat-cap">more positive language in forward-looking sentences</div></div>
+          </div>
+          <div class="body">
+            <h3>10-K Text &amp; Sentiment Analysis</h3>
+            <p>Measured tone, readability and forward-looking language across 100 annual reports.</p>
+            <span class="more">View project <span class="arrow">→</span></span>
+          </div>
+          <div class="details">
+            <div class="modal-head"><h2>10-K Text &amp; Sentiment Analysis</h2></div>
+            <div class="modal-body">
+              <h4>Goal</h4>
+              <p>Annual reports (10-Ks) are long, dense documents. I wanted to measure their language at scale: how positive, negative or legally cautious they sound, how hard they are to read, and how much they talk about the future.</p>
+              <h4>Data</h4>
+              <p>100 10-K filings, downloaded and processed in Python (Jupyter notebooks).</p>
+              <h4>Approach</h4>
+              <ul>
+                <li>Built a corpus-wide term-frequency dictionary and scored each filing against financial sentiment lexicons (positive, negative, litigious), normalized by document length.</li>
+                <li>Segmented text with NLTK and isolated forward-looking statements using modal-verb detection.</li>
+                <li>Measured readability (Gunning Fog, complex-word share) and computed every metric in parallel for the full text and the forward-looking subset.</li>
+              </ul>
+              <h4>Results</h4>
+              <ul>
+                <li>About <strong>9.5% of sentences</strong> in a typical 10-K are forward-looking.</li>
+                <li>Forward-looking sentences carry far more sentiment: positive words appear at <strong>3x</strong> the rate of the full text (0.33% vs. 0.10%) and negative words at <strong>2.6x</strong> (1.29% vs. 0.50%). Negative words still outnumber positive ones by roughly 4 to 1.</li>
+                <li>Forward-looking sentences are also much harder to read, with an average Fog score nearly double that of the full text.</li>
+              </ul>
+              <!-- <img src="images/10k-chart.png" alt="Chart"> -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== PROJECT 2 ===================== -->
+        <div class="card reveal">
+          <div class="thumb">
+            <div class="thumb-top"><span class="num">02</span></div>
+            <div><div class="stat">21.7%</div><div class="stat-cap">of MD&amp;A sentences are forward-looking</div></div>
+          </div>
+          <div class="body">
+            <h3>MD&amp;A Extraction</h3>
+            <p>Pulled the Management's Discussion &amp; Analysis section out of every 10-K and re-ran the full analysis on it.</p>
+            <span class="more">View project <span class="arrow">→</span></span>
+          </div>
+          <div class="details">
+            <div class="modal-head"><h2>MD&amp;A Extraction</h2></div>
+            <div class="modal-body">
+              <h4>Goal</h4>
+              <p>Item 7, Management's Discussion and Analysis (MD&amp;A), is where management explains the company's results in its own words. I wanted to compare this section's language with the language of the 10-K as a whole.</p>
+              <h4>Approach</h4>
+              <ul>
+                <li>Built a rule-based parser to locate and extract Item 7 across inconsistently formatted filings.</li>
+                <li>Applied the full 10-K pipeline to the MD&amp;A and saved the combined dataset as a pickle for reuse.</li>
+              </ul>
+              <h4>Results</h4>
+              <ul>
+                <li>Successfully extracted the MD&amp;A from <strong>89 filings</strong>, averaging about 16,000 words each.</li>
+                <li>The MD&amp;A is far more expressive than the rest of the 10-K: positive words appear at about <strong>6x</strong> the full-text rate (0.59% vs. 0.10%) and negative words at about <strong>3.4x</strong> (1.71% vs. 0.50%), while litigious language is lower.</li>
+                <li>It is also more forward-looking: <strong>21.7%</strong> of MD&amp;A sentences are future-oriented, compared with 9.5% across the full 10-K. It is easier to read as well, with a lower Fog score.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== PROJECT 3 ===================== -->
+        <div class="card reveal">
+          <div class="thumb">
+            <div class="thumb-top"><span class="num">03</span></div>
+            <div><div class="stat">8,603</div><div class="stat-cap">speaker turns parsed from 200 calls</div></div>
+          </div>
+          <div class="body">
+            <h3>Earnings Call Scraper</h3>
+            <p>Automatically collected 200 earnings call transcripts and split them into speaker turns.</p>
+            <span class="more">View project <span class="arrow">→</span></span>
+          </div>
+          <div class="details">
+            <div class="modal-head"><h2>Earnings Call Scraper</h2></div>
+            <div class="modal-body">
+              <h4>Goal</h4>
+              <p>Build a dataset of earnings calls that separates what executives say in their <strong>prepared remarks</strong> from how they answer analysts in the <strong>Q&amp;A</strong>.</p>
+              <h4>Data</h4>
+              <p>Earnings call transcripts from 10 pages of The Motley Fool's transcript listings, 20 calls per page.</p>
+              <h4>Approach</h4>
+              <ul>
+                <li>Automated transcript collection across 10 listing pages with a Python scraper.</li>
+                <li>Segmented each call into prepared remarks and Q&amp;A, then parsed it into speaker turns.</li>
+                <li>Structured the output as two linked tables: one at the call level and one at the speaker-turn level.</li>
+              </ul>
+              <h4>Results</h4>
+              <ul>
+                <li>Collected and parsed <strong>200 earnings calls</strong> into <strong>8,603 speaker turns</strong>, about 43 turns per call.</li>
+                <li>Produced a clean, labeled dataset (prepared remarks vs. Q&amp;A) that became the training data for the Naive Bayes classifier in Project 4.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== PROJECT 4 ===================== -->
+        <div class="card reveal">
+          <div class="thumb">
+            <div class="thumb-top"><span class="num">04</span></div>
+            <div><div class="stat">96.6%</div><div class="stat-cap">classification accuracy</div></div>
+          </div>
+          <div class="body">
+            <h3>Prepared vs. Q&amp;A Classifier</h3>
+            <p>A Naive Bayes model that tells scripted remarks apart from live answers to analysts.</p>
+            <span class="more">View project <span class="arrow">→</span></span>
+          </div>
+          <div class="details">
+            <div class="modal-head"><h2>Prepared vs. Q&amp;A Classifier</h2></div>
+            <div class="modal-body">
+              <h4>Goal</h4>
+              <p>Do executives talk differently when they're reading a script than when they're answering questions live? I built a model to find out.</p>
+              <h4>Approach</h4>
+              <ul>
+                <li>Trained a Naive Bayes classifier on executives' prepared remarks versus their live answers to analysts.</li>
+                <li>Deployed the model in an interactive web page that returns a label and class probabilities for any sentence.</li>
+              </ul>
+              <h4>Results</h4>
+              <ul>
+                <li>Reached <strong>96.6% accuracy</strong> on 732 held-out test examples using the real class priors (18% prepared, 82% Q&amp;A), compared with 95.4% under equal priors.</li>
+                <li>Most errors were Q&amp;A answers labeled as prepared remarks. Nearly all were executives' closing statements, which tend to be rehearsed, so the model's mistake is understandable.</li>
+                <li>On the web page, I tested the model on earnings call statements outside the training and test data. Accuracy improved as inputs got longer.</li>
+              </ul>
+              <!-- <img src="images/classifier-screenshot.png" alt="Classifier webpage"> -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Ankita Gogoi</span>
+      <span><a href="https://github.com/yourusername">GitHub</a> &nbsp;·&nbsp; <a href="https://www.linkedin.com/in/yourprofile">LinkedIn</a></span>
+    </div>
+  </footer>
+
+  <!-- Pop-up window (filled in automatically when a card is clicked) -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <button class="close-btn" id="closeBtn" aria-label="Close">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const overlay = document.getElementById('overlay');
+    const modalContent = document.getElementById('modalContent');
+
+    // Open: copy the clicked card's hidden description into the pop-up
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        modalContent.innerHTML = card.querySelector('.details').innerHTML;
+        overlay.querySelector('.modal').scrollTop = 0;
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    // Close: X button, clicking outside the box, or pressing Esc
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('closeBtn').addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Navigation bar turns solid after scrolling
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+
+    // Fade-in elements as they scroll into view
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
 
 </body>
 </html>
